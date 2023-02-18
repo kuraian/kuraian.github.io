@@ -1,0 +1,52 @@
+:root {
+    --black: #000000;
+    --purple: #382843;
+    --grey: #7c6d80;
+    --white: #c7c6c6;
+}
+
+@font-face {
+    font-family: fixedsys;
+    src: url("../resources/FSEX300.ttf");
+}
+
+html {
+    font-family: fixedsys;
+    background-color: var(--white);
+}
+body {
+    margin: 0;
+}
+/*  VERTICAL NAVIBAR CLASSES
+    subclass of ul */
+ul.navibar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 15%;
+    position: fixed;
+    overflow: auto;
+}
+li a.navibar_option {
+    display: block;
+    padding: 1rem 1rem 1rem 1rem;
+    text-decoration: none;
+    color: var(--purple);
+}
+li a.navibar_option:hover:not(.active) {
+    background-color: var(--grey);
+    color: var(--white);
+}
+li a.navibar_option.active {
+    background-color:var(--purple);
+    color: var(--white);
+}
+
+/*  VERTICAL NAVIGATED CLASSES   
+    subclass of div */
+div.navigated {
+    margin: 0;
+    margin-left: 15%;
+    padding: 1rem 1rem 1rem 1rem;
+}
