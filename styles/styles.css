@@ -50,3 +50,20 @@ div.navigated {
     margin-left: 15%;
     padding: 1rem 1rem 1rem 1rem;
 }
+
+/* to-do list classes */
+div.navigated.todo {
+    margin:0
+}
+ul.todo {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+li.todo {
+    cursor: pointer;
+    position: relative;
+    padding: 1rem 1rem 1rem 1rem;
+    text-decoration: none;
+    transition: .3s;
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width" />
+        <link href="styles/styles.css" rel="stylesheet"/>
+        <title>kuraian's todo list</title>
+    </head>
+    <body>
+        <!-- navigation bar, left align 20%, sticky, current link = navibar_option_active -->
+        <!-- <li><a class="navibar_option" href="" target="_blank" rel="noopener noreferrer">place</a></li> -->
+        <ul class="navibar">
+            <li><a class="navibar_option" href="index.html">home page</a></li>
+            <li><a class="navibar_option" href="https://github.com/kuraian" target="_blank" rel="noopener noreferrer">github</a></li>
+            <li><a class="navibar_option" href="https://www.linkedin.com/in/kuraian/" target="_blank" rel="noopener noreferrer">linkedin</a></li>
+            <li><a class="navibar_option" href="index.html">resume (inactive)</a></li>
+            <li><a class="navibar_option" href="projects.html">projects (inactive)</a></li>
+            <li><a class="navibar_option active" href="todo.html">todo</a></li>
+            <li><a class="navibar_option" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">fun!!!</a></li>
+        </ul>
+        <div class="navigated">
+            <h1 style="padding-top:0; margin:0">my to-do list 😁</h1>
+            <h2>testing input here:</h2>
+            <input type="text" id="myInput" placeholder="blahblahblah">
+            <!-- <span onclick="addElement()" style="font-size:3rem; background-color:aqua;">BUTTON</span> -->
+            <ul class="todo" id="todoList"></ul>
+        </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyAONM99kAnHc5E7yalfMK8TBsN58cp02qM",
+            authDomain: "kuraian-github-io-b45e8.firebaseapp.com",
+            databaseURL: "https://kuraian-github-io-b45e8-default-rtdb.firebaseio.com",
+            projectId: "kuraian-github-io-b45e8",
+            storageBucket: "kuraian-github-io-b45e8.appspot.com",
+            messagingSenderId: "627303016142",
+            appId: "1:627303016142:web:5d9fbc26eadc2bd66a929f",
+            measurementId: "G-RGDRFX9CN0"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        
+        // Initialize Realtime Database and get a reference to the service
+        const database = getDatabase(app);
+
+        function saveEntry(content, due, category) {
+            const db = getDatabase();
+            set(ref(db, 'todo/' + Date.now()), {
+                due: due,
+                category: category,
+                content: content
+            });
+        }
+
+        //LOCAL TODO LIST FUNCTIONS
+        var input = document.getElementById("myInput");
+        input.addEventListener("keydown", function(event) {
+            if(event.key === "Enter"){
+                addElement();
+                saveEntry("hello", "no due date", "random");
+            }
+        });
+
+        function addElement(){
+            var li = document.createElement("li");
+            var inputValue = document.getElementById("myInput").value;
+            var text = document.createTextNode(inputValue);
+            li.appendChild(text);
+            document.getElementById("todoList").appendChild(li);
+            document.getElementById("myInput").value = "";
+        }
+        
+    </script>
+    </body>
+</html>
