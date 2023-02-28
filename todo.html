@@ -29,10 +29,9 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
-
         // Your web app's Firebase configuration
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
@@ -45,40 +44,73 @@
             appId: "1:627303016142:web:5d9fbc26eadc2bd66a929f",
             measurementId: "G-RGDRFX9CN0"
         };
-
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        
+        const app = initializeApp(firebaseConfig);     
         // Initialize Realtime Database and get a reference to the service
         const database = getDatabase(app);
+        const dbRef = ref(getDatabase());
 
-        function saveEntry(content, due, category) {
+        function saveEntry(content) {
             const db = getDatabase();
+            const event = new Date();
             set(ref(db, 'todo/' + Date.now()), {
-                due: due,
-                category: category,
+                created: event.toUTCString(),
+                json: event.toJSON(),
                 content: content
             });
+
         }
 
-        //LOCAL TODO LIST FUNCTIONS
-        var input = document.getElementById("myInput");
-        input.addEventListener("keydown", function(event) {
-            if(event.key === "Enter"){
-                addElement();
-                saveEntry("hello", "no due date", "random");
-            }
-        });
-
         function addElement(){
+            /*
+            TODO: string parsing for input value, due date, and category?
+            or is it worth it to just do that on the userside: provide simply input output text keeper
+            */
             var li = document.createElement("li");
             var inputValue = document.getElementById("myInput").value;
             var text = document.createTextNode(inputValue);
             li.appendChild(text);
             document.getElementById("todoList").appendChild(li);
             document.getElementById("myInput").value = "";
+            saveEntry(inputValue);            
         }
         
+        function displayElement(content) {
+            var li = document.createElement("li");
+            var text = document.createTextNode(content);
+            li.appendChild(text);
+            document.getElementById("todoList").appendChild(li);
+        }
+        
+        //INPUT LISTENER FOR ENTRY BOX
+        var input = document.getElementById("myInput");
+        input.addEventListener("keydown", function(event) {
+            if(event.key === "Enter"){
+                addElement();
+            }
+        });
+
+        // GETTING DATA FROM FIREBASE ON LOAD
+        get(child(dbRef, 'todo/')).then((snapshot) => {
+        if (snapshot.exists()) {
+            let todoGotten = snapshot.val();
+            let todoKeys = Object.keys(snapshot.val());
+            console.log(snapshot.val());
+            console.log(Object.keys(snapshot.val()));
+
+            // for key in todoKeys, display that todo objects
+            for (var key in todoKeys) {
+                let tempKey = todoKeys[key];
+                console.log(tempKey);
+                displayElement(todoGotten[tempKey]["content"]);
+                
+            }
+        } else {
+            console.log("No data available");
+        }
+        }).catch((error) => {
+            console.error(error);
+        });
     </script>
     </body>
 </html>
