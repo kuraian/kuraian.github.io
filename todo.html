@@ -29,7 +29,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"
+        import { getDatabase, ref, set, get, remove, child } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
         // Your web app's Firebase configuration
@@ -50,15 +50,16 @@
         const database = getDatabase(app);
         const dbRef = ref(getDatabase());
 
-        function saveEntry(content) {
+        function newEntry(content) {
             const db = getDatabase();
             const event = new Date();
-            set(ref(db, 'todo/' + Date.now()), {
+            const temp = Date.now()
+            set(ref(db, 'todo/' + temp), {
                 created: event.toUTCString(),
                 json: event.toJSON(),
                 content: content
             });
-
+            displayElement(content, temp);
         }
 
         function addElement(){
@@ -68,18 +69,27 @@
             */
             var li = document.createElement("li");
             var inputValue = document.getElementById("myInput").value;
-            var text = document.createTextNode(inputValue);
-            li.appendChild(text);
-            document.getElementById("todoList").appendChild(li);
             document.getElementById("myInput").value = "";
-            saveEntry(inputValue);            
+            newEntry(inputValue);            
         }
         
-        function displayElement(content) {
+        function displayElement(content, key) {
             var li = document.createElement("li");
             var text = document.createTextNode(content);
             li.appendChild(text);
+            li.setAttribute("id", key);
+            li.onclick = function func() { removeElement(li, key) };
             document.getElementById("todoList").appendChild(li);
+        }
+
+        function removeElement(li, key) {
+            console.log(key)
+            const db = getDatabase()
+            const elementRef = ref(db, 'todo/'+ key)
+            remove(elementRef).then(() => {
+            console.log(key + " removed successfully")
+            });
+            li.remove();
         }
         
         //INPUT LISTENER FOR ENTRY BOX
@@ -101,9 +111,7 @@
             // for key in todoKeys, display that todo objects
             for (var key in todoKeys) {
                 let tempKey = todoKeys[key];
-                console.log(tempKey);
-                displayElement(todoGotten[tempKey]["content"]);
-                
+                displayElement(todoGotten[tempKey]["content"], tempKey);
             }
         } else {
             console.log("No data available");
@@ -111,6 +119,9 @@
         }).catch((error) => {
             console.error(error);
         });
+
+        //INPUT LISTENER FOR DELETING TODO ENTRIES
+
     </script>
     </body>
 </html>
